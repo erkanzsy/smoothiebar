@@ -6,12 +6,18 @@ struct RootView: View {
     var body: some View {
         VStack(spacing: 16) {
             header
-            Spacer()
-            orderCard
-            Spacer()
-            blenderView
-            fruitPad
-            serveButton
+            if case .chopping = engine.phase {
+                Spacer()
+                ChopView(engine: engine)
+                Spacer()
+            } else {
+                Spacer()
+                orderCard
+                Spacer()
+                blenderView
+                fruitPad
+                serveButton
+            }
         }
         .padding()
         .background(Color(.systemGroupedBackground))
@@ -64,13 +70,15 @@ struct RootView: View {
                     Text("Doğru kombinasyonu hazırla")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    patienceBar
+                    PatienceBarView(engine: engine)
                 }
                 .padding(24)
                 .frame(maxWidth: .infinity)
                 .background(.white, in: .rect(cornerRadius: 20))
                 .shadow(radius: 4, y: 2)
             }
+        case .chopping:
+            EmptyView()
         case .feedback(let message):
             Text(message)
                 .font(.title3.bold())
@@ -78,27 +86,6 @@ struct RootView: View {
                 .padding()
         case .dayEnd:
             EmptyView()
-        }
-    }
-
-    private var patienceFraction: Double {
-        max(0, min(1, engine.remainingPatience / engine.patienceDuration))
-    }
-
-    private var patienceBar: some View {
-        HStack(spacing: 8) {
-            Text("🧍")
-                .font(.title3)
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule().fill(.quaternary)
-                    Capsule()
-                        .fill(patienceFraction > 0.5 ? .green : patienceFraction > 0.25 ? .orange : .red)
-                        .frame(width: geo.size.width * patienceFraction)
-                        .animation(.linear(duration: 0.1), value: patienceFraction)
-                }
-            }
-            .frame(height: 8)
         }
     }
 
@@ -139,15 +126,27 @@ struct RootView: View {
     private var serveButton: some View {
         switch engine.phase {
         case .preparing:
-            Button {
-                engine.serve()
-            } label: {
-                Text("Karıştır ve Servis Et")
-                    .frame(maxWidth: .infinity)
+            HStack(spacing: 12) {
+                if !engine.isChopped {
+                    Button {
+                        engine.beginChopping()
+                    } label: {
+                        Text("✂️ Doğra")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(engine.blender.isEmpty)
+                }
+                Button {
+                    engine.serve()
+                } label: {
+                    Text(engine.isChopped ? "🥤 Servis Et" : "Karıştır ve Servis Et")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .disabled(engine.blender.isEmpty)
             }
-            .buttonStyle(.borderedProminent)
-            .disabled(engine.blender.isEmpty)
-        case .feedback:
+        case .feedback, .chopping, .dayEnd:
             EmptyView()
         default:
             EmptyView()

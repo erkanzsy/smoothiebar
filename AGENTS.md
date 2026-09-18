@@ -34,6 +34,8 @@ portföy stratejisi: aynı motor sonradan farklı temalara çoğaltılacak (Flip
 - Portrait-only, iPhone-only (`TARGETED_DEVICE_FAMILY=1`); iPad sonra
 - Fiyat modeli: premium tek alım $1.99. Free/lite versiyon veya IAP ancak v2'de tartışılır
 - Skorlama: doğru meyve başına +20, fazla/yanlış -5, tam eşleşme bonusu +30 (DayEngine.score)
+- Doğrama bonusu: taban skor × kalite × 0.2 (DayEngine.chopBonus, maks %20); çekirdek skorlama değişmez
+- Export compliance: `ITSAppUsesNonExemptEncryption=NO` — yalnızca standart HTTPS, özel şifreleme yok
 - Gün = 5 sipariş; blender kapasitesi 5; sipariş 2-4 meyve
 - Diller String Catalog ile (`Localizable.xcstrings`, Xcode otomatik üretir) — kodda String
   bırakma, `Text("key")` lokalizasyona hazır olsun (mevcut v0 stub'ları TR, v1 öncesi taşıyacak)
@@ -43,8 +45,8 @@ portföy stratejisi: aynı motor sonradan farklı temalara çoğaltılacak (Flip
 
 1. Hafta 1: çekirdek döngü ✅ (v0 stub: sipariş → meyve seç → servis → skor) · müşteri sabır
    zamanlayıcısı · gün sonu ekranı + kazanç
-2. Hafta 2: istasyon mekanikleri (doğrama/ karıştırma minigame'leri) · haptics · ses ·
-   30 level data · Game Center leaderboard
+2. Hafta 2: istasyon mekanikleri (doğrama ✅ / karıştırma minigame'leri) · haptics (doğrama tap
+   ✅) · ses · 30 level data · Game Center leaderboard
 3. Hafta 3-4: sanat (modern soft-3D stil) · yükseltme ekonomisi · iCloud kayıt ·
    lokalizasyon 7 dil · TestFlight
 4. Hafta 5-6: ASO (anahtar kelimeler: smoothie game, juice bar, cooking game) ·
